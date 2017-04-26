@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteStatement;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -37,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
     SQLiteDatabase articlesDB;
     SharedPreferences sharedPreferences = null;
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -64,17 +62,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sharedPreferences = getSharedPreferences("mySharedPref", MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(getString(R.string.mySP), MODE_PRIVATE);
 
-        if (sharedPreferences.getBoolean("firstRun", true)) {
+        if (sharedPreferences.getBoolean((getString(R.string.SPfirstRun)), true)) {
 
             DownloadInfo();
-            sharedPreferences.edit().putBoolean("firstRun", false).apply();
+            sharedPreferences.edit().putBoolean(getString(R.string.SPfirstRun), false).apply();
 
         }
 
-
-        setTitle("Top News");
+        setTitle(getString(R.string.AppTitle));
 
         ListView newsListView = (ListView) findViewById(R.id.newsListView);
         arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, titles);
@@ -92,8 +89,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        articlesDB = openOrCreateDatabase("Articles", MODE_PRIVATE, null);
-        articlesDB.execSQL("CREATE TABLE IF NOT EXISTS articles (id INTEGER PRIMARY KEY, articleId INTEGER, title VARCHAR, urls VARCHAR)");
+        articlesDB = openOrCreateDatabase(getString(R.string.tableNameinDB), MODE_PRIVATE, null);
+        articlesDB.execSQL(getString(R.string.SQLCreateDB));
 
         updateListView();
 
@@ -102,10 +99,12 @@ public class MainActivity extends AppCompatActivity {
     private void DownloadInfo() {
 
         try {
+
             DownloadInfoTask task = new DownloadInfoTask();
-            task.execute("https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty");
+            task.execute(getString(R.string.topNewsUrl));
 
         } catch (Exception e) {
+
             e.printStackTrace();
         }
 
@@ -113,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateListView() {
 
-        Cursor c = articlesDB.rawQuery("SELECT * FROM articles", null);
+        Cursor c = articlesDB.rawQuery(getString(R.string.SQLSelectAllFromArticle), null);
 
         int titleindex = c.getColumnIndex("title");
         int contentIndex = c.getColumnIndex("urls");
@@ -145,10 +144,11 @@ public class MainActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            pd.setMessage("Loading news...");
+            pd.setMessage(getString(R.string.processDislogueStart));
             pd.setCancelable(false);
             pd.setCanceledOnTouchOutside(false);
             pd.show();
+
         }
 
         @Override
@@ -175,10 +175,7 @@ public class MainActivity extends AppCompatActivity {
 
                     data = reader.read();
 
-
                 }
-
-                Log.i("content", result);
 
                 JSONArray array = new JSONArray(result);
 
@@ -188,13 +185,13 @@ public class MainActivity extends AppCompatActivity {
                     maxnum = array.length();
                 }
 
-                articlesDB.execSQL("DELETE FROM articles");
+                articlesDB.execSQL(getString(R.string.SQLDeleteFromArticles));
 
                 for (int i = 0; i < maxnum; i++) {
 
                     String articleId = array.getString(i);
 
-                    url = new URL("https://hacker-news.firebaseio.com/v0/item/" + articleId + ".json?print=pretty");
+                    url = new URL(getString(R.string.articleUrl) + articleId + getString(R.string.articleUrl2));
 
                     httpURLConnection = (HttpURLConnection) url.openConnection();
                     in = httpURLConnection.getInputStream();
@@ -214,10 +211,10 @@ public class MainActivity extends AppCompatActivity {
 
                     JSONObject jo = new JSONObject(articleInfo);
 
-                    if ((!jo.isNull("title")) && (!jo.isNull("url"))) {
+                    if ((!jo.isNull(getString(R.string.title))) && (!jo.isNull(getString(R.string.url)))) {
 
-                        String articleTitle = jo.getString("title");
-                        String articleUrl = jo.getString("url");
+                        String articleTitle = jo.getString(getString(R.string.title));
+                        String articleUrl = jo.getString(getString(R.string.url));
 
 //                        url = new URL(articleUrl);
 //
@@ -239,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
 
                         //Log.i("article content", articleContent);
 
-                        String sql = "INSERT INTO articles (articleId, title, urls) VALUES (?, ?, ?)";
+                        String sql = getString(R.string.SQLInsertIntoArticles);
 
                         SQLiteStatement statement = articlesDB.compileStatement(sql);
 
@@ -257,9 +254,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-
             return null;
-
 
         }
 

@@ -38,13 +38,13 @@ public class ArticleActivity extends AppCompatActivity {
     {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            // TODO Auto-generated method stub
+
             super.onPageStarted(view, url, favicon);
         }
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            // TODO Auto-generated method stub
+
             progressBar.setVisibility(View.VISIBLE);
             view.loadUrl(url);
             return true;
@@ -53,7 +53,7 @@ public class ArticleActivity extends AppCompatActivity {
 
         @Override
         public void onPageFinished(WebView view, String url) {
-            // TODO Auto-generated method stub
+
             super.onPageFinished(view, url);
 
             progressBar.setVisibility(View.GONE);
@@ -61,10 +61,3 @@ public class ArticleActivity extends AppCompatActivity {
     }
 
 }
-
-
-/*
-
-
-
- */

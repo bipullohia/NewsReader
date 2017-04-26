@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">News Reader</string>
+    <string name="processDislogueStart">Loading news...</string>
+    <string name="articleUrl">https://hacker-news.firebaseio.com/v0/item/</string>
+    <string name="articleUrl2">.json?print=pretty</string>
+    <string name="title">title</string>
+    <string name="url">url</string>
+    <string name="SPfirstRun">firstRun</string>
+    <string name="mySP">mySharedPref</string>
+    <string name="AppTitle">Top News</string>
+    <string name="topNewsUrl">https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty</string>
+    <string name="SQLCreateDB">CREATE TABLE IF NOT EXISTS articles (id INTEGER PRIMARY KEY, articleId INTEGER, title VARCHAR, urls VARCHAR)</string>
+    <string name="SQLSelectAllFromArticle">SELECT * FROM articles</string>
+    <string name="SQLDeleteFromArticles">DELETE FROM articles</string>
+    <string name="SQLInsertIntoArticles">INSERT INTO articles (articleId, title, urls) VALUES (?, ?, ?)</string>
+    <string name="tableNameinDB">Articles</string>
+    <string name="refresh">Refresh</string>
 </resources>
